@@ -1,0 +1,18 @@
+# Dependencies
+backend/node_modules/
+frontend/node_modules/
+
+# Angular build
+frontend/.angular/
+frontend/dist/
+
+# Uploads
+backend/uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
