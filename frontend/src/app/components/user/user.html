@@ -1,0 +1,117 @@
+<div class="dashboard">
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <h1>👤 MEAN User Manager</h1>
+    <button class="btn btn-logout" (click)="logout()">🚪 Logout</button>
+  </nav>
+
+  <div class="container">
+
+    <!-- ===== ADD USER FORM ===== -->
+    <div class="card">
+      <h2>➕ Add New User</h2>
+      <div class="form-row">
+        <input type="text" placeholder="Name" [(ngModel)]="name" />
+        <input type="number" placeholder="Age" [(ngModel)]="age" />
+        <button class="btn btn-add" (click)="addUser()">Add</button>
+      </div>
+    </div>
+
+    <!-- ===== SEARCH & FILTER ===== -->
+    <div class="card">
+      <h2>🔍 Search & Filter</h2>
+      <div class="form-row">
+        <input type="text" placeholder="Search by name..." [(ngModel)]="searchTerm" (input)="onSearch()" />
+        <input type="number" placeholder="Min Age" [(ngModel)]="minAge" (change)="onSearch()" />
+        <input type="number" placeholder="Max Age" [(ngModel)]="maxAge" (change)="onSearch()" />
+      </div>
+      <div class="sort-row">
+        <span>Sort by:</span>
+        <button class="btn btn-sort" (click)="onSort('name')">
+          Name {{ sortBy === 'name' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+        </button>
+        <button class="btn btn-sort" (click)="onSort('age')">
+          Age {{ sortBy === 'age' ? (sortOrder === 'asc' ? '↑' : '↓') : '' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== USER LIST ===== -->
+    <div class="card">
+      <h2>📋 User List <span class="badge">{{ totalUsers() }}</span></h2>
+
+      @if (users().length === 0) {
+        <p class="empty-msg">No users found 🚀</p>
+      }
+
+      @for (user of users(); track user._id) {
+        <div class="user-row" [class.editing]="editingId === user._id">
+
+          @if (editingId !== user._id) {
+            <div class="user-info">
+              <span class="user-name">{{ user.name }}</span>
+              <span class="user-age">Age: {{ user.age }}</span>
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-edit" (click)="editUser(user)">✏️ Edit</button>
+              <button class="btn btn-delete" (click)="deleteUser(user._id)">🗑️ Delete</button>
+            </div>
+          }
+
+          @if (editingId === user._id) {
+            <div class="edit-form">
+              <input type="text" [(ngModel)]="editName" placeholder="Name" />
+              <input type="number" [(ngModel)]="editAge" placeholder="Age" />
+            </div>
+            <div class="user-actions">
+              <button class="btn btn-save" (click)="updateUser()">💾 Save</button>
+              <button class="btn btn-cancel" (click)="cancelEdit()">✖ Cancel</button>
+            </div>
+          }
+
+        </div>
+      }
+
+      <!-- PAGINATION -->
+      @if (totalPages() > 1) {
+        <div class="pagination">
+          <button class="btn btn-page" (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1">
+            ← Prev
+          </button>
+          <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+          <button class="btn btn-page" (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">
+            Next →
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- ===== FILE UPLOAD ===== -->
+    <div class="card">
+      <h2>📁 File Upload</h2>
+
+      @if (uploadMsg) {
+        <div class="success-msg">{{ uploadMsg }}</div>
+      }
+
+      <div class="upload-area">
+        <input type="file" (change)="onFileSelect($event)" />
+        <button class="btn btn-add" (click)="uploadFile()" [disabled]="!selectedFile">Upload</button>
+      </div>
+
+      @if (uploadedFiles().length > 0) {
+        <h3>Uploaded Files</h3>
+        <div class="file-list">
+          @for (file of uploadedFiles(); track file.filename) {
+            <div class="file-item">
+              <span>📄 {{ file.filename }}</span>
+              <a [href]="'http://localhost:3000' + file.path" target="_blank" class="btn btn-view">View</a>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+</div>
