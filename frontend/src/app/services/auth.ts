@@ -10,7 +10,6 @@ export class AuthService {
   register(data: any) {
     return this.http.post(`${this.apiUrl}/register`, data);
   }
-
   // LOGIN
   login(data: any) {
     return this.http.post(`${this.apiUrl}/login`, data);
